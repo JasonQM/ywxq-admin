@@ -26,6 +26,9 @@ class ManageDailyStatistics extends Page
     #[Url]
     public ?string $until = null;
 
+    #[Url]
+    public string $fontSize = '12';
+
     /**
      * @var array<int, string>
      */
@@ -99,6 +102,13 @@ class ManageDailyStatistics extends Page
         $this->from = null;
         $this->until = null;
         $this->fillConsumeAmounts();
+    }
+
+    public function updatedFontSize(): void
+    {
+        if (! in_array($this->fontSize, ['8', '9', '10', '11', '12', '13', '14'], true)) {
+            $this->fontSize = '12';
+        }
     }
 
     public function saveConsume(int $id): void

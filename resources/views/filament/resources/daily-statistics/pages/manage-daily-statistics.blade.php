@@ -5,6 +5,8 @@
 
     $summary = $this->getSummary();
     $records = $this->getRecords();
+    $fontSizes = ['8', '9', '10', '11', '12', '13', '14'];
+    $tableFontSize = in_array($this->fontSize, $fontSizes, true) ? $this->fontSize : '12';
 
     $columns = [
         ['key' => 'day', 'label' => '日期', 'width' => 92],
@@ -56,7 +58,23 @@
         'roi' => $percent($summary['roi'] ?? 0),
     ];
 
-    $cell = 'padding: 6px 6px; white-space: nowrap; text-align: center;';
+    $cellPadding = match ($tableFontSize) {
+        '8', '9' => '3px 4px',
+        '10' => '4px 5px',
+        '11' => '5px 5px',
+        '13' => '7px 7px',
+        '14' => '8px 8px',
+        default => '6px 6px',
+    };
+    $inputWidth = match ($tableFontSize) {
+        '8', '9' => 48,
+        '10' => 54,
+        '11' => 58,
+        '13' => 70,
+        '14' => 76,
+        default => 64,
+    };
+    $cell = "padding: {$cellPadding}; white-space: nowrap; text-align: center; font-size: {$tableFontSize}px; line-height: 1.25;";
     $columnGroups = [
         '基础' => [
             'day' => '日期',
@@ -107,6 +125,15 @@
             <div style="display: flex; align-items: center; gap: 12px; position: relative;">
                 <button type="button" wire:click="resetFilters" style="padding: 8px 4px; color: #dc2626; font-size: 14px; font-weight: 600;">重置</button>
 
+                <label style="display: inline-flex; align-items: center; gap: 6px; color: #374151; font-size: 13px; font-weight: 700;">
+                    <span>字号</span>
+                    <select wire:model.live="fontSize" style="width: 68px; border: 1px solid #d1d5db; border-radius: 7px; padding: 7px 8px; font-size: 13px; background: #fff;">
+                        @foreach ($fontSizes as $value)
+                            <option value="{{ $value }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </label>
+
                 <details style="position: relative;">
                     <summary
                         title="字段显示"
@@ -141,7 +168,7 @@
         </div>
 
         <div style="width: 100%; overflow-x: auto;">
-            <table style="min-width: {{ $tableWidth }}px; width: {{ $tableWidth }}px; border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 12px; color: #111827;">
+            <table style="min-width: {{ $tableWidth }}px; width: {{ $tableWidth }}px; border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: {{ $tableFontSize }}px; color: #111827;">
                 <thead>
                     <tr style="background: #f8fafc; box-shadow: inset 0 -1px 0 #eef2f7;">
                         @foreach ($columns as $column)
@@ -174,7 +201,7 @@
                                                 min="0"
                                                 wire:model.defer="consumeAmounts.{{ $record->id }}"
                                                 wire:change="saveConsume({{ $record->id }})"
-                                                style="width: 64px; border: 1px solid #d1d5db; border-radius: 5px; padding: 3px 5px; text-align: center; font-size: 12px;"
+                                                style="width: {{ $inputWidth }}px; border: 1px solid #d1d5db; border-radius: 5px; padding: 3px 5px; text-align: center; font-size: {{ $tableFontSize }}px;"
                                             >
                                             @break
                                         @case('login_num') {{ $number($record->login_num) }} @break
