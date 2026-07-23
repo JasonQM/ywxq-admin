@@ -105,6 +105,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 '数据明细',
+                '用户信息',
                 '数据预警',
                 '系统管理',
             ])
