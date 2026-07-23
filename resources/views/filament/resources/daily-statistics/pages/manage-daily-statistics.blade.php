@@ -7,6 +7,7 @@
     $records = $this->getRecords();
     $fontSizes = ['8', '9', '10', '11', '12', '13', '14'];
     $tableFontSize = in_array($this->fontSize, $fontSizes, true) ? $this->fontSize : '12';
+    $widthScale = max(0.72, min(1.18, ((int) $tableFontSize) / 12));
 
     $columns = [
         ['key' => 'day', 'label' => '日期', 'width' => 92],
@@ -32,6 +33,21 @@
         ['key' => 'roi', 'label' => 'ROI', 'width' => 64],
     ];
     $columns = array_values(array_filter($columns, fn (array $column): bool => in_array($column['key'], $this->visibleColumns, true)));
+    $columns = array_map(
+        function (array $column) use ($widthScale): array {
+            $minWidth = match ($column['key']) {
+                'day' => 72,
+                'consume_amount', 'register_cost', 'pay_cost', 'new_recharge_amount', 'recharge_amount', 'withdraw_amount' => 58,
+                'new_customer_roa' => 60,
+                default => 48,
+            };
+
+            $column['width'] = max($minWidth, (int) round($column['width'] * $widthScale));
+
+            return $column;
+        },
+        $columns,
+    );
     $tableWidth = array_sum(array_column($columns, 'width'));
 
     $summaryCells = [
