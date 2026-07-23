@@ -24,6 +24,26 @@ class PlayerLookupService
         return $this->request('findshenfenzhengPlayer', ['shenfenzheng' => $idCard]);
     }
 
+    public function ban(string $uid): void
+    {
+        $this->callAction('banPlayer', $uid);
+    }
+
+    public function unban(string $uid): void
+    {
+        $this->callAction('unbanPlayer', $uid);
+    }
+
+    private function callAction(string $method, string $uid): void
+    {
+        $response = Http::timeout((int) config('game.request_timeout', 15))->get(config('game.stats_base_url'), [
+            'method' => $method,
+            'uid' => $uid,
+        ]);
+
+        $response->throw();
+    }
+
     private function request(string $method, array $query): array
     {
         $response = Http::timeout((int) config('game.request_timeout', 15))->get(config('game.stats_base_url'), [

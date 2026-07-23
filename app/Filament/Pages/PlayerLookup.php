@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\PlayerActionLog;
 use App\Services\PlayerLookupService;
 use BackedEnum;
 use Carbon\CarbonImmutable;
@@ -54,6 +55,14 @@ class PlayerLookup extends Page
 
     public ?string $message = null;
 
+    public bool $showActionModal = false;
+
+    public ?string $pendingUid = null;
+
+    public ?string $pendingAction = null;
+
+    public ?string $actionRemark = null;
+
     public function search(PlayerLookupService $service): void
     {
         $keyword = trim((string) $this->keyword);
@@ -101,6 +110,81 @@ class PlayerLookup extends Page
         }
 
         $this->users = $this->uniqueUsers($allUsers);
+    }
+
+    public function openActionModal(string $uid): void
+    {
+        $user = $this->findUserInResults($uid);
+
+        if ($user === null) {
+            $this->warn('未找到用户');
+
+            return;
+        }
+
+        $this->pendingUid = $uid;
+        $this->pendingAction = $this->isBanned($user) ? PlayerActionLog::ACTION_UNBAN : PlayerActionLog::ACTION_BAN;
+        $this->actionRemark = null;
+        $this->showActionModal = true;
+    }
+
+    public function closeActionModal(): void
+    {
+        $this->showActionModal = false;
+        $this->pendingUid = null;
+        $this->pendingAction = null;
+        $this->actionRemark = null;
+    }
+
+    public function confirmAction(PlayerLookupService $service): void
+    {
+        $uid = trim((string) $this->pendingUid);
+        $action = (string) $this->pendingAction;
+        $remark = trim((string) $this->actionRemark);
+
+        if ($uid === '' || ! in_array($action, [PlayerActionLog::ACTION_BAN, PlayerActionLog::ACTION_UNBAN], true)) {
+            $this->warn('操作信息不完整');
+
+            return;
+        }
+
+        if ($remark === '') {
+            $this->warn('请填写备注');
+
+            return;
+        }
+
+        try {
+            if ($action === PlayerActionLog::ACTION_UNBAN) {
+                $service->unban($uid);
+                $title = '已解封用户';
+            } else {
+                $service->ban($uid);
+                $title = '已封号用户';
+            }
+
+            PlayerActionLog::query()->create([
+                'uid' => $uid,
+                'action' => $action,
+                'remark' => $remark,
+                'operated_at' => now(),
+            ]);
+
+            Notification::make()
+                ->title($title)
+                ->success()
+                ->send();
+
+            $this->closeActionModal();
+
+            if ($this->searchedKeyword) {
+                $this->keyword = $this->searchedKeyword;
+                $this->search($service);
+            }
+        } catch (Throwable $exception) {
+            report($exception);
+            $this->warn('操作失败，请稍后重试');
+        }
     }
 
     /**
@@ -155,6 +239,16 @@ class PlayerLookup extends Page
     public function money(float|int $value): string
     {
         return '¥'.number_format((float) $value, 2);
+    }
+
+    public function isBanned(array $user): bool
+    {
+        return (int) Arr::get($user, 'banDay', 0) === 20991231;
+    }
+
+    public function banStatus(array $user): string
+    {
+        return $this->isBanned($user) ? '封号' : '正常';
     }
 
     private function resetSearchState(string $keyword): void
@@ -237,6 +331,21 @@ class PlayerLookup extends Page
         }
 
         return array_values($unique);
+    }
+
+    private function findUserInResults(string $uid): ?array
+    {
+        if ($this->primaryUser !== null && $this->userId($this->primaryUser) === $uid) {
+            return $this->primaryUser;
+        }
+
+        foreach ($this->users as $user) {
+            if ($this->userId($user) === $uid) {
+                return $user;
+            }
+        }
+
+        return null;
     }
 
     private function warn(string $message): void

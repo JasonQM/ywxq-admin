@@ -44,7 +44,21 @@
 
         @if ($primaryUser)
             <div style="border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; overflow: hidden;">
-                <div style="padding: 12px 14px; border-bottom: 1px solid #eef2f7; font-size: 14px; font-weight: 800;">主用户</div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 12px 14px; border-bottom: 1px solid #eef2f7;">
+                    <div style="font-size: 14px; font-weight: 800;">主用户</div>
+                    <div style="display: inline-flex; align-items: center; gap: 8px;">
+                        <span style="display: inline-flex; padding: 4px 8px; border-radius: 999px; background: {{ $this->isBanned($primaryUser) ? '#fef2f2' : '#ecfdf5' }}; color: {{ $this->isBanned($primaryUser) ? '#b91c1c' : '#047857' }}; font-size: 12px; font-weight: 700;">
+                            {{ $this->banStatus($primaryUser) }}
+                        </span>
+                        <button
+                            type="button"
+                            wire:click="openActionModal('{{ $this->userId($primaryUser) }}')"
+                            style="padding: 5px 10px; border-radius: 7px; background: {{ $this->isBanned($primaryUser) ? '#16a34a' : '#dc2626' }}; color: #fff; font-size: 12px; font-weight: 700;"
+                        >
+                            {{ $this->isBanned($primaryUser) ? '解封' : '封号' }}
+                        </button>
+                    </div>
+                </div>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0; font-size: 13px;">
                     @foreach ($this->userFields($primaryUser) as $field)
                         <div style="display: grid; gap: 4px; padding: 10px 14px; border-bottom: 1px solid #f1f5f9;">
@@ -62,6 +76,44 @@
                 'users' => $users,
                 'cell' => $cell,
             ])
+        @endif
+
+        @if ($showActionModal)
+            <div style="position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 16px; background: rgba(15, 23, 42, 0.42);">
+                <div style="width: min(460px, 100%); border-radius: 10px; background: #fff; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.22); overflow: hidden;">
+                    <div style="padding: 14px 16px; border-bottom: 1px solid #eef2f7;">
+                        <div style="font-size: 15px; font-weight: 800;">确认{{ $pendingAction }}</div>
+                        <div style="margin-top: 4px; color: #64748b; font-size: 12px;">UID：{{ $pendingUid }}</div>
+                    </div>
+
+                    <div style="padding: 16px;">
+                        <label style="display: block; margin-bottom: 6px; font-size: 12px; font-weight: 700;">备注</label>
+                        <textarea
+                            wire:model.defer="actionRemark"
+                            rows="4"
+                            placeholder="请输入本次{{ $pendingAction }}原因"
+                            style="width: 100%; resize: vertical; border: 1px solid #d1d5db; border-radius: 8px; padding: 9px 10px; font-size: 13px; line-height: 1.5;"
+                        ></textarea>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 8px; padding: 12px 16px; border-top: 1px solid #eef2f7; background: #f8fafc;">
+                        <button
+                            type="button"
+                            wire:click="closeActionModal"
+                            style="padding: 7px 12px; border-radius: 7px; background: #fff; color: #334155; border: 1px solid #d1d5db; font-size: 12px; font-weight: 700;"
+                        >
+                            取消
+                        </button>
+                        <button
+                            type="button"
+                            wire:click="confirmAction"
+                            style="padding: 7px 12px; border-radius: 7px; background: {{ $pendingAction === \App\Models\PlayerActionLog::ACTION_UNBAN ? '#16a34a' : '#dc2626' }}; color: #fff; font-size: 12px; font-weight: 700;"
+                        >
+                            确认{{ $pendingAction }}
+                        </button>
+                    </div>
+                </div>
+            </div>
         @endif
     </div>
 </x-filament-panels::page>
