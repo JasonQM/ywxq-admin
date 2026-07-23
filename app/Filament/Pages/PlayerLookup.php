@@ -243,7 +243,7 @@ class PlayerLookup extends Page
 
     public function isBanned(array $user): bool
     {
-        return (int) Arr::get($user, 'banDay', 0) > 20991201;
+        return (int) Arr::get($user, 'banDay', 0) > 1;
     }
 
     public function banStatus(array $user): string
