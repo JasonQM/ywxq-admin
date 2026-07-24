@@ -79,6 +79,7 @@ class ManageRetentionStatistics extends Page
     private function baseQuery(): Builder|Relation
     {
         return DailyStatistic::query()
+            ->whereDate('day', '<', CarbonImmutable::today(config('app.timezone'))->toDateString())
             ->when($this->from, fn (Builder $query, string $date): Builder => $query->whereDate('day', '>=', $date))
             ->when($this->until, fn (Builder $query, string $date): Builder => $query->whereDate('day', '<=', $date));
     }
