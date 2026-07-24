@@ -29,8 +29,28 @@
 
 <x-filament-widgets::widget>
     <x-filament::section>
-        <x-slot name="heading">今日数据</x-slot>
-        <x-slot name="description">{{ $today->format('Y/m/d') }}</x-slot>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
+            <div>
+                <div style="font-size: 16px; line-height: 1.35; color: #111827; font-weight: 800;">今日数据</div>
+                <div style="margin-top: 2px; font-size: 13px; color: #64748b;">{{ $today->format('Y/m/d') }}</div>
+            </div>
+            <button
+                type="button"
+                wire:click="syncToday"
+                wire:loading.attr="disabled"
+                wire:target="syncToday"
+                style="display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; background: #0ea5e9; color: #fff; padding: 7px 11px; font-size: 13px; font-weight: 700;"
+            >
+                <svg wire:loading.remove wire:target="syncToday" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+                    <path d="M3 21v-5h5"></path>
+                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+                    <path d="M16 8h5V3"></path>
+                </svg>
+                <span wire:loading.remove wire:target="syncToday">刷新今日数据</span>
+                <span wire:loading wire:target="syncToday">刷新中</span>
+            </button>
+        </div>
 
         @if ($record)
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 8px;">
