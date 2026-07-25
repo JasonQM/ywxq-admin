@@ -56,7 +56,7 @@ class DailyStatistic extends Model
         $this->real_name_rate = $this->ratio($this->real_name_num, $this->register_num);
         $this->pay_rate = $this->ratio($this->new_recharge_user_count, $this->register_num);
         $this->register_cost = $this->moneyRatio($this->consume_amount, $this->register_num);
-        $this->pay_cost = $this->moneyRatio($this->consume_amount, $this->recharge_user_count);
+        $this->pay_cost = $this->moneyRatio($this->consume_amount, $this->new_recharge_user_count);
         $this->arpu = $this->moneyRatio($this->recharge_amount, $this->login_num);
         $this->arppu = $this->moneyRatio($this->recharge_amount, $this->recharge_user_count);
         $this->new_customer_roa = $this->ratio($this->new_recharge_amount, $this->consume_amount);

@@ -175,7 +175,7 @@ class ManageDailyStatistics extends Page
             'recharge_user_count' => $rechargeUsers,
             'pay_rate' => $this->ratio($newRechargeUsers, $register),
             'register_cost' => $this->moneyRatio($consume, $register),
-            'pay_cost' => $this->moneyRatio($consume, $rechargeUsers),
+            'pay_cost' => $this->moneyRatio($consume, $newRechargeUsers),
             'new_recharge_amount' => $newRecharge,
             'recharge_amount' => $recharge,
             'withdraw_user_count' => (int) ($summary?->withdraw_user_count ?? 0),
