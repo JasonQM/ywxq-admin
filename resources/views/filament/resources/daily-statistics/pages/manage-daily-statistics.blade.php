@@ -16,7 +16,6 @@
         ['key' => 'register_num', 'label' => '注册', 'width' => 70],
         ['key' => 'register_cost', 'label' => '注成本', 'width' => 78],
         ['key' => 'active_dau', 'label' => 'DAU', 'width' => 70],
-        ['key' => 'register_rate', 'label' => '注率', 'width' => 70],
         ['key' => 'real_name_num', 'label' => '实名', 'width' => 70],
         ['key' => 'real_name_rate', 'label' => '实名率', 'width' => 76],
         ['key' => 'new_recharge_user_count', 'label' => '新付数', 'width' => 78],
@@ -56,7 +55,6 @@
         'login_num' => $number($summary['login_num'] ?? 0),
         'active_dau' => $number($summary['active_dau'] ?? 0),
         'register_num' => $number($summary['register_num'] ?? 0),
-        'register_rate' => $percent($summary['register_rate'] ?? 0),
         'real_name_num' => $number($summary['real_name_num'] ?? 0),
         'real_name_rate' => $percent($summary['real_name_rate'] ?? 0),
         'new_recharge_user_count' => $number($summary['new_recharge_user_count'] ?? 0),
@@ -101,7 +99,6 @@
             'active_dau' => '活跃DAU',
         ],
         '转化' => [
-            'register_rate' => '注册率',
             'real_name_num' => '实名人数',
             'real_name_rate' => '实名认证率',
         ],
@@ -223,7 +220,6 @@
                                         @case('login_num') {{ $number($record->login_num) }} @break
                                         @case('active_dau') {{ $number($record->active_dau) }} @break
                                         @case('register_num') {{ $number($record->register_num) }} @break
-                                        @case('register_rate') {{ $percent($record->register_rate) }} @break
                                         @case('real_name_num') {{ $number($record->real_name_num) }} @break
                                         @case('real_name_rate') {{ $percent($record->real_name_rate) }} @break
                                         @case('new_recharge_user_count') {{ $number($record->new_recharge_user_count) }} @break
