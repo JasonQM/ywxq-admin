@@ -8,7 +8,6 @@
         ['label' => '登录', 'value' => $number($record->login_num)],
         ['label' => 'DAU', 'value' => $number($record->active_dau)],
         ['label' => '注册', 'value' => $number($record->register_num)],
-        ['label' => '注册率', 'value' => $percent($record->register_rate)],
         ['label' => '实名', 'value' => $number($record->real_name_num)],
         ['label' => '实名率', 'value' => $percent($record->real_name_rate)],
         ['label' => '新付数', 'value' => $number($record->new_recharge_user_count)],
