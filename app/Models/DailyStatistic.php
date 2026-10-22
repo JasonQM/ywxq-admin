@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class DailyStatistic extends Model
@@ -69,6 +70,16 @@ class DailyStatistic extends Model
         $this->rd1_rate = $this->ratio($this->rd1_login_num, $this->new_recharge_user_count);
         $this->rd3_rate = $this->ratio($this->rd3_login_num, $this->new_recharge_user_count);
         $this->rd7_rate = $this->ratio($this->rd7_login_num, $this->new_recharge_user_count);
+    }
+
+    protected function realNameCost(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes): float => $this->moneyRatio(
+                $attributes['consume_amount'] ?? 0,
+                $attributes['real_name_num'] ?? 0,
+            ),
+        );
     }
 
     private function ratio(mixed $numerator, mixed $denominator): float
