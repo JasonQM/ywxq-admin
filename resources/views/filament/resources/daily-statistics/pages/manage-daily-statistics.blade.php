@@ -17,6 +17,7 @@
         ['key' => 'register_cost', 'label' => '注成本', 'width' => 78],
         ['key' => 'active_dau', 'label' => 'DAU', 'width' => 70],
         ['key' => 'real_name_num', 'label' => '实名', 'width' => 70],
+        ['key' => 'real_name_cost', 'label' => '实成本', 'width' => 78],
         ['key' => 'real_name_rate', 'label' => '实名率', 'width' => 76],
         ['key' => 'new_recharge_user_count', 'label' => '新付数', 'width' => 78],
         ['key' => 'pay_cost', 'label' => '付成本', 'width' => 78],
@@ -56,6 +57,7 @@
         'active_dau' => $number($summary['active_dau'] ?? 0),
         'register_num' => $number($summary['register_num'] ?? 0),
         'real_name_num' => $number($summary['real_name_num'] ?? 0),
+        'real_name_cost' => $money($summary['real_name_cost'] ?? 0),
         'real_name_rate' => $percent($summary['real_name_rate'] ?? 0),
         'new_recharge_user_count' => $number($summary['new_recharge_user_count'] ?? 0),
         'recharge_user_count' => $number($summary['recharge_user_count'] ?? 0),
@@ -100,6 +102,7 @@
         ],
         '转化' => [
             'real_name_num' => '实名人数',
+            'real_name_cost' => '实名成本',
             'real_name_rate' => '实名认证率',
         ],
         '付费' => [
@@ -221,6 +224,7 @@
                                         @case('active_dau') {{ $number($record->active_dau) }} @break
                                         @case('register_num') {{ $number($record->register_num) }} @break
                                         @case('real_name_num') {{ $number($record->real_name_num) }} @break
+                                        @case('real_name_cost') {{ $money($record->real_name_cost) }} @break
                                         @case('real_name_rate') {{ $percent($record->real_name_rate) }} @break
                                         @case('new_recharge_user_count') {{ $number($record->new_recharge_user_count) }} @break
                                         @case('recharge_user_count') {{ $number($record->recharge_user_count) }} @break
