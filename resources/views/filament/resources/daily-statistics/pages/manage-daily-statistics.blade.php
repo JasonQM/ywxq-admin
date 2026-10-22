@@ -1,7 +1,7 @@
 @php
-    $money = fn (float|int $value): string => number_format((float) $value, 2);
-    $number = fn (float|int $value): string => number_format((float) $value, 0);
-    $percent = fn (float|int $value): string => number_format(((float) $value) * 100, 2) . '%';
+    $money = fn (mixed $value): string => number_format((float) ($value ?? 0), 2);
+    $number = fn (mixed $value): string => number_format((float) ($value ?? 0), 0);
+    $percent = fn (mixed $value): string => number_format(((float) ($value ?? 0)) * 100, 2) . '%';
 
     $summary = $this->getSummary();
     $records = $this->getRecords();
