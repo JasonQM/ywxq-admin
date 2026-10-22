@@ -60,7 +60,6 @@ class DailyStatisticResource extends Resource
                 TextColumn::make('active_dau')->label('活跃DAU')->numeric()->sortable(),
                 TextColumn::make('register_num')->label('注册人数')->numeric()->sortable(),
                 TextColumn::make('real_name_num')->label('实名人数')->numeric()->sortable(),
-                TextColumn::make('real_name_cost')->label('实成本')->money('CNY')->sortable(),
                 TextColumn::make('real_name_rate')->label('实名认证率')->formatStateUsing(fn ($state) => self::percent($state))->sortable(),
                 TextColumn::make('new_recharge_user_count')->label('新客付费人')->numeric()->sortable(),
                 TextColumn::make('recharge_user_count')->label('总付数')->numeric()->sortable(),

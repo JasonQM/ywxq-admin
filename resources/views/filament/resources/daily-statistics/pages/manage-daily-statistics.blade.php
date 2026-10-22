@@ -2,6 +2,9 @@
     $money = fn (mixed $value): string => number_format((float) ($value ?? 0), 2);
     $number = fn (mixed $value): string => number_format((float) ($value ?? 0), 0);
     $percent = fn (mixed $value): string => number_format(((float) ($value ?? 0)) * 100, 2) . '%';
+    $realNameCost = fn ($record): float => (int) $record->real_name_num > 0
+        ? (float) $record->consume_amount / (int) $record->real_name_num
+        : 0.0;
 
     $summary = $this->getSummary();
     $records = $this->getRecords();
@@ -224,7 +227,7 @@
                                         @case('active_dau') {{ $number($record->active_dau) }} @break
                                         @case('register_num') {{ $number($record->register_num) }} @break
                                         @case('real_name_num') {{ $number($record->real_name_num) }} @break
-                                        @case('real_name_cost') {{ $money($record->real_name_cost) }} @break
+                                        @case('real_name_cost') {{ $money($realNameCost($record)) }} @break
                                         @case('real_name_rate') {{ $percent($record->real_name_rate) }} @break
                                         @case('new_recharge_user_count') {{ $number($record->new_recharge_user_count) }} @break
                                         @case('recharge_user_count') {{ $number($record->recharge_user_count) }} @break
